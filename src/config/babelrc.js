@@ -53,6 +53,7 @@ module.exports = () => ({
       ],
     ),
     ifAnyDep(['flow-bin'], [require.resolve('@babel/preset-flow')]),
+    ifAnyDep(['typescript'], [require.resolve('@babel/preset-typescript')]),
   ].filter(Boolean),
   plugins: [
     [
@@ -74,6 +75,7 @@ module.exports = () => ({
       ? require.resolve('babel-plugin-transform-inline-environment-variables')
       : null,
     [require.resolve('@babel/plugin-proposal-class-properties'), {loose: true}],
+    '@babel/proposal-object-rest-spread',
     require.resolve('babel-plugin-minify-dead-code-elimination'),
     treeshake
       ? null

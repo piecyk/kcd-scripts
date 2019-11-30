@@ -16,7 +16,8 @@
     "build": "node src build",
     "lint": "node src lint",
     "format": "node src format",
-    "validate": "node src validate"
+    "validate": "node src validate",
+    "prepare": "npm run build"
   },
   "husky": {
     "hooks": {
@@ -35,15 +36,17 @@
   "author": "Kent C. Dodds <kent@doddsfamily.us> (http://kentcdodds.com/)",
   "license": "MIT",
   "dependencies": {
-    "@babel/cli": "^7.6.4",
-    "@babel/core": "^7.6.4",
-    "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "@babel/plugin-transform-modules-commonjs": "^7.6.0",
-    "@babel/plugin-transform-runtime": "^7.6.2",
-    "@babel/preset-env": "^7.6.3",
-    "@babel/preset-flow": "^7.0.0",
-    "@babel/preset-react": "^7.6.3",
-    "@babel/runtime": "^7.6.3",
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/preset-flow": "^7.7.4",
+    "@babel/preset-react": "^7.7.4",
+    "@babel/preset-typescript": "^7.7.4",
+    "@babel/runtime": "^7.7.4",
     "@rollup/plugin-replace": "^2.2.0",
     "@types/jest": "^24.0.23",
     "arrify": "^2.0.1",

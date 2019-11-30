@@ -10,6 +10,12 @@ const here = p => path.join(__dirname, p)
 
 const parsedArgs = yargsParser(args)
 
+const builtInExtensions = '.js,.jsx,.es6,.es,.mjs,.ts,.tsx'
+
+const extensions = args.includes('--extensions')
+  ? []
+  : ['--extensions', builtInExtensions]
+
 const useBuiltinConfig =
   !args.includes('--presets') &&
   !hasFile('.babelrc') &&
@@ -36,7 +42,9 @@ if (!useSpecifiedOutDir && !args.includes('--no-clean')) {
 
 const result = spawn.sync(
   resolveBin('@babel/cli', {executable: 'babel'}),
-  [...outDir, ...copyFiles, ...ignore, ...config, 'src'].concat(args),
+  [...outDir, ...copyFiles, ...ignore, ...extensions, ...config, 'src'].concat(
+    args,
+  ),
   {stdio: 'inherit'},
 )
 
