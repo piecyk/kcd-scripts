@@ -19,9 +19,9 @@ const {
   fromRoot,
   uniq,
   writeExtraEntry,
+  fromConfig,
 } = require('../utils')
 
-const here = p => path.join(__dirname, p)
 const capitalize = s => s[0].toUpperCase() + s.slice(1)
 
 const minify = parseEnv('BUILD_MINIFY', false)
@@ -121,7 +121,7 @@ const useBuiltinConfig =
   !hasFile('.babelrc.js') &&
   !hasFile('babel.config.js') &&
   !hasPkgProp('babel')
-const babelPresets = useBuiltinConfig ? [here('../config/babelrc.js')] : []
+const babelPresets = useBuiltinConfig ? [fromConfig('babelrc.js')] : []
 
 const replacements = Object.entries(
   umd ? process.env : omit(process.env, ['NODE_ENV']),

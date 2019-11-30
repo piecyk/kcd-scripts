@@ -3,10 +3,15 @@ const spawn = require('cross-spawn')
 const yargsParser = require('yargs-parser')
 const rimraf = require('rimraf')
 const glob = require('glob')
-const {hasPkgProp, fromRoot, resolveBin, hasFile} = require('../../utils')
+const {
+  hasPkgProp,
+  fromRoot,
+  resolveBin,
+  hasFile,
+  fromConfig,
+} = require('../../utils')
 
 const args = process.argv.slice(2)
-const here = p => path.join(__dirname, p)
 
 const parsedArgs = yargsParser(args)
 
@@ -16,9 +21,7 @@ const useBuiltinConfig =
   !hasFile('.babelrc.js') &&
   !hasFile('babel.config.js') &&
   !hasPkgProp('babel')
-const config = useBuiltinConfig
-  ? ['--presets', here('../../config/babelrc.js')]
-  : []
+const config = useBuiltinConfig ? ['--presets', fromConfig('babelrc.js')] : []
 
 const builtInIgnore = '**/__tests__/**,**/__mocks__/**'
 

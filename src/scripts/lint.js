@@ -1,11 +1,14 @@
-const path = require('path')
 const spawn = require('cross-spawn')
 const yargsParser = require('yargs-parser')
-const {hasPkgProp, resolveBin, hasFile, fromRoot} = require('../utils')
+const {
+  hasPkgProp,
+  resolveBin,
+  hasFile,
+  fromRoot,
+  fromConfigRelative,
+} = require('../utils')
 
 let args = process.argv.slice(2)
-const here = p => path.join(__dirname, p)
-const hereRelative = p => here(p).replace(process.cwd(), '.')
 const parsedArgs = yargsParser(args)
 
 const useBuiltinConfig =
@@ -15,7 +18,7 @@ const useBuiltinConfig =
   !hasPkgProp('eslintConfig')
 
 const config = useBuiltinConfig
-  ? ['--config', hereRelative('../config/eslintrc.js')]
+  ? ['--config', fromConfigRelative('eslintrc.js')]
   : []
 
 const useBuiltinIgnore =
@@ -24,7 +27,7 @@ const useBuiltinIgnore =
   !hasPkgProp('eslintIgnore')
 
 const ignore = useBuiltinIgnore
-  ? ['--ignore-path', hereRelative('../config/eslintignore')]
+  ? ['--ignore-path', fromConfigRelative('eslintignore')]
   : []
 
 const cache = args.includes('--no-cache')

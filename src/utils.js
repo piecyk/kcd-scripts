@@ -7,6 +7,7 @@ const has = require('lodash.has')
 const readPkgUp = require('read-pkg-up')
 const which = require('which')
 const cosmiconfig = require('cosmiconfig')
+const glob = require('glob')
 
 const {packageJson: pkg, path: pkgPath} = readPkgUp.sync({
   cwd: fs.realpathSync(process.cwd()),
@@ -176,6 +177,70 @@ function hasLocalConfig(moduleName, searchOptions = {}) {
   return result !== null
 }
 
+function attemptResolve(...resolveArgs) {
+  try {
+    return require.resolve(...resolveArgs)
+  } catch (error) {
+    return null
+  }
+}
+
+const configPath = path.join(__dirname, 'config/')
+
+const {KCD_SCRIPTS_CUSTOM_CONFIG_PATH} = process.env
+
+const fromConfig = (...p) => {
+  if (KCD_SCRIPTS_CUSTOM_CONFIG_PATH) {
+    const filePath = path.join(KCD_SCRIPTS_CUSTOM_CONFIG_PATH, ...p)
+    if (fs.existsSync(filePath)) {
+      return filePath
+    }
+  }
+  return path.join(configPath, ...p)
+}
+
+const fromConfigRelative = (...p) =>
+  fromConfig(...p).replace(process.cwd(), '.')
+
+const {KCD_SCRIPTS_CUSTOM_SCRIPTS_PATH} = process.env
+
+const scriptsPath = path.join(__dirname, 'scripts/')
+
+const fromScripts = (...p) => {
+  if (KCD_SCRIPTS_CUSTOM_SCRIPTS_PATH) {
+    const scriptPath = path.join(KCD_SCRIPTS_CUSTOM_SCRIPTS_PATH, ...p)
+    if (attemptResolve(scriptPath)) {
+      return scriptPath
+    }
+  }
+  return attemptResolve(path.join(scriptsPath, ...p))
+}
+
+function scriptsBy(p) {
+  const scriptsAvailable = glob.sync(path.join(p, '*'))
+  // `glob.sync` returns paths with unix style path separators even on Windows.
+  // So we normalize it before attempting to strip out the scripts path.
+  return scriptsAvailable
+    .map(path.normalize)
+    .map(s =>
+      s
+        .replace(p, '')
+        .replace(/__tests__/, '')
+        .replace(/\.js$/, ''),
+    )
+    .filter(Boolean)
+}
+
+const listScripts = () =>
+  [
+    ...new Set([
+      ...(KCD_SCRIPTS_CUSTOM_SCRIPTS_PATH
+        ? scriptsBy(KCD_SCRIPTS_CUSTOM_SCRIPTS_PATH)
+        : []),
+      ...scriptsBy(scriptsPath),
+    ]),
+  ].sort()
+
 module.exports = {
   appDirectory,
   envIsSet,
@@ -199,4 +264,8 @@ module.exports = {
   resolveKcdScripts,
   uniq,
   writeExtraEntry,
+  fromConfig,
+  fromConfigRelative,
+  fromScripts,
+  listScripts,
 }
