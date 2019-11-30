@@ -4,11 +4,12 @@ const glob = require('glob')
 
 const [executor, ignoredBin, script, ...args] = process.argv
 
+const scriptsPath = path.join(__dirname, 'scripts/')
+
 if (script) {
   spawnScript()
 } else {
-  const scriptsPath = path.join(__dirname, 'scripts/')
-  const scriptsAvailable = glob.sync(path.join(__dirname, 'scripts', '*'))
+  const scriptsAvailable = glob.sync(path.join(scriptsPath, '*'))
   // `glob.sync` returns paths with unix style path separators even on Windows.
   // So we normalize it before attempting to strip out the scripts path.
   const scriptsAvailableMessage = scriptsAvailable
@@ -53,7 +54,7 @@ function getEnv() {
 }
 
 function spawnScript() {
-  const relativeScriptPath = path.join(__dirname, './scripts', script)
+  const relativeScriptPath = path.join(scriptsPath, script)
   const scriptPath = attemptResolve(relativeScriptPath)
 
   if (!scriptPath) {
